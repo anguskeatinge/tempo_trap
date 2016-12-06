@@ -1,0 +1,100 @@
+testing: ../music/open/_ground_truth/open_001.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_002.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_003.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_004.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_005.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_006.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_007.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_008.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_009.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_010.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_011.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_012.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_013.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_014.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_015.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_016.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_017.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_018.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_019.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_020.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_021.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_022.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_023.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_024.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+
+testing: ../music/open/_ground_truth/open_025.txt
+results: 1.000000
+backup scores: 1.000000 1.000000 1.000000
+

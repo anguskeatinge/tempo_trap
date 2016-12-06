@@ -1,0 +1,100 @@
+testing: ../music/open/_r2b2/open_001.txt
+results: 0.891304
+backup scores: 0.891304 0.891304 0.891304
+
+testing: ../music/open/_r2b2/open_002.txt
+results: 0.840000
+backup scores: 0.680000 0.840000 0.680000
+
+testing: ../music/open/_r2b2/open_003.txt
+results: 0.875000
+backup scores: 0.875000 0.875000 0.875000
+
+testing: ../music/open/_r2b2/open_004.txt
+results: 0.870968
+backup scores: 0.870968 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_005.txt
+results: 0.871795
+backup scores: 0.871795 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_006.txt
+results: 0.707317
+backup scores: 0.195122 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_007.txt
+results: 0.476190
+backup scores: 0.333333 0.476190 0.333333
+
+testing: ../music/open/_r2b2/open_008.txt
+results: 0.862069
+backup scores: 0.862069 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_009.txt
+results: 0.725490
+backup scores: 0.509804 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_010.txt
+results: 0.857143
+backup scores: 0.816327 0.857143 0.816327
+
+testing: ../music/open/_r2b2/open_011.txt
+results: 0.338983
+backup scores: 0.118644 0.338983 0.118644
+
+testing: ../music/open/_r2b2/open_012.txt
+results: 0.276596
+backup scores: 0.191489 0.276596 0.191489
+
+testing: ../music/open/_r2b2/open_013.txt
+results: 0.871795
+backup scores: 0.871795 0.871795 0.871795
+
+testing: ../music/open/_r2b2/open_014.txt
+results: 0.458333
+backup scores: 0.354167 0.458333 0.354167
+
+testing: ../music/open/_r2b2/open_015.txt
+results: 0.864407
+backup scores: 0.864407 0.864407 0.864407
+
+testing: ../music/open/_r2b2/open_016.txt
+results: 0.214286
+backup scores: 0.059524 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_017.txt
+results: 0.871795
+backup scores: 0.871795 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_018.txt
+results: 0.872727
+backup scores: 0.872727 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_019.txt
+results: 0.162162
+backup scores: 0.162162 0.105263 0.078947
+
+testing: ../music/open/_r2b2/open_020.txt
+results: 0.210526
+backup scores: 0.131579 0.078947 0.026316
+
+testing: ../music/open/_r2b2/open_021.txt
+results: 0.000000
+backup scores: 0.000000 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_022.txt
+results: 0.820000
+backup scores: 0.620000 0.820000 0.620000
+
+testing: ../music/open/_r2b2/open_023.txt
+results: 0.869565
+backup scores: 0.869565 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_024.txt
+results: 0.860000
+backup scores: 0.860000 0.000000 0.000000
+
+testing: ../music/open/_r2b2/open_025.txt
+results: 0.600000
+backup scores: 0.560000 0.000000 0.000000
+
