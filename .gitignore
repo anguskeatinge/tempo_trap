@@ -4,3 +4,5 @@
 *.swo
 
 .python-version
+
+~$scores.xlsx

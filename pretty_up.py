@@ -3,8 +3,13 @@ import json
 from pprint import pprint
 import sys
 
+# algo = 'ground_truth'
+# algo = 'essentia_multifeature'
+# algo = 'ellis_beat2'
 
-with open("results/r2b2.json") as data_file:
+algo = 'r2b2'
+
+with open("results/" + algo + ".json") as data_file:
     data = json.load(data_file)
 
 for key in data:
