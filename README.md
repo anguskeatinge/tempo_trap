@@ -8,7 +8,7 @@ we run the python script to pretty print the high level results.
 1. simple one number benchmark for each algo into a table or some nicely presented form
 2. detailed breakdown of performance
 
-Beat trackers I still need to get results from for benchmark:
+#### Beat trackers I still need to get results from for benchmark
 1. ellis' beat_simple
 2. ibt (from Jerry)
 3. BTrack (from Jerry or github)
