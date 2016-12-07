@@ -1,3 +1,6 @@
+###### Benchmark
+[Current benchmark status](./scores.csv "Benchmark")
+
 #### How it works
 'test_beats.m' gets scores from 'beatEvaluator.m' for all 25 songs of the open dataset.
 It then writes out to a json file all of the results and some analysis of the results.
