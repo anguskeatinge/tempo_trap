@@ -5,15 +5,13 @@ It then writes out to a json file all of the results and some analysis of the re
 we run the python script to pretty print the high level results.
 
 #### Todo
-
-	- simple one number benchmark for each algo into a table or some nicely presented form
-
-	- detailed breakdown of performance
+1. simple one number benchmark for each algo into a table or some nicely presented form
+2. detailed breakdown of performance
 
 Beat trackers I still need to get results from for benchmark:
-	- ellis' beat_simple
-	- ibt (from Jerry)
-	- BTrack (from Jerry or github)
+1. ellis' beat_simple
+2. ibt (from Jerry)
+3. BTrack (from Jerry or github)
 
 #### JSON
 https://github.com/kyamagu/matlab-json
