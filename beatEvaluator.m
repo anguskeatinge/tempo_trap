@@ -60,8 +60,8 @@ annotations = annotations(:);
 detections = detections(:);
 
 % remove beats and annotations that are before minBeatTime
-annotations(annotations<minBeatTime) = [];
-detections(detections<minBeatTime) = [];
+annotations(annotations<minBeatTime) = []
+detections(detections<minBeatTime) = []
 
 % now do some checks
 if (and(isempty(detections),isempty(annotations)))

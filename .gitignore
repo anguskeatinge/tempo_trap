@@ -3,6 +3,11 @@
 *.swp
 *.swo
 
+# pyenv local thing
 .python-version
 
+# this was the excel spreadsheet
 ~$scores.xlsx
+
+# directory with play results in it
+prelim_results/
