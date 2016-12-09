@@ -1,4 +1,5 @@
-function [mainscore, backupscores]= beatEvaluator(detections,annotations)
+function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = beatEvaluator(detections,annotations)
+
 
 %  function [mainscore, backupscores]= beatEvaluator(detections,annotations)
 %   
@@ -50,13 +51,9 @@ phase_tolerance = 0.175;
 tempo_tolerance = 0.175;
 
 % run the evaluation code
-[cmlC,cmlT,amlC,amlT] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime);
+[beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime);
 
-% use amlT as the overall score
-mainscore = amlT;
-backupscores = [amlC, cmlT, cmlC]; % in case of an amlT tie, we can use these as tie-breakers in this order.
-
-function [cmlC,cmlT,amlC,amlT] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime)
+function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime)
 
 % put the beats and annotations into column vectors
 annotations = annotations(:);
@@ -138,34 +135,32 @@ variations{5} = annotations(2:2:end);
 numVariations = size(variations,2);
 
 % pre-allocate array to store intermediate scores of different variations
-cmlCVec = zeros(1,numVariations);
-cmlTVec = zeros(1,numVariations);
+beat_cmlCVec = zeros(1,numVariations);
+beat_cmlTVec = zeros(1,numVariations);
+phase_cmlCVec = zeros(1,numVariations);
+phase_cmlTVec = zeros(1,numVariations);
+tempo_cmlCVec = zeros(1,numVariations);
+tempo_cmlTVec = zeros(1,numVariations);
 
 % loop analysis over number of variants on annotations
 for j=1:numVariations,
-    [cmlCVec(j),cmlTVec(j)] = ContinuityEval(detections,variations{j},tempo_tolerance,phase_tolerance);
+    [beat_cmlCVec(j),beat_cmlTVec(j),phase_cmlCVec(j),phase_cmlTVec(j),tempo_cmlCVec(j),tempo_cmlTVec(j)] = ContinuityEval(detections,variations{j},tempo_tolerance,phase_tolerance);
 end
 
 
-% assign the accuracy scores
-cmlC = cmlCVec(1);
-cmlT = cmlTVec(1);
-amlC = max(cmlCVec);
-amlT = max(cmlTVec);
-
-function [contAcc, totAcc] = ContinuityEval(detections,annotations,tempo_tolerance,phase_tolerance)
+function [beat_contAcc, beat_totAcc, phase_contAcc, phase_totAcc, tempo_contAcc, tempo_totAcc] = ContinuityEval(detections,annotations,tempo_tolerance,phase_tolerance)
 % sub-function for calculating continuity-based accuracy
 
 if (length(annotations)<2)
-    contAcc = 0;
-    totAcc = 0;
+    beat_contAcc = 0;
+    beat_totAcc = 0;
     disp('At least two annotations are required to create an interval');
     return
 end
 
 if (length(detections)<2)
-    contAcc = 0;
-    totAcc = 0;
+    beat_contAcc = 0;
+    beat_totAcc = 0;
     disp('At least two detections are required to create an interval');
     return
 end
@@ -218,11 +213,29 @@ correct_beats = correct_phase & correct_tempo;
 % to do so, we'll add zeros on the front and end in case the sequence is
 % all ones
 correct_beats = [0 correct_beats(:)' 0];
+correct_phase = [0 correct_phase(:)' 0];
+correct_tempo = [0 correct_tempo(:)' 0];
+
 % now find the boundaries
 [~,d2,~] = find(correct_beats==0);
 correct_beats = correct_beats(2:end-1);
+[~,d2,~] = find(correct_phase==0);
+correct_phase = correct_phase(2:end-1);
+[~,d2,~] = find(correct_tempo==0);
+correct_tempo = correct_tempo(2:end-1);
+
 
 % in best case, d2 = 1 & length(checkbeats)
-contAcc = (max(diff(d2))-1)/length(correct_beats);
-totAcc = sum(correct_beats)/length(correct_beats);
+% instead on only the best continuous, I can maybe look at the difference between beat_contAcc and beat_totAcc
+beat_contAcc = (max(diff(d2))-1)/length(correct_beats);
+beat_totAcc = sum(correct_beats)/length(correct_beats);
 
+phase_contAcc = (max(diff(d2))-1)/length(correct_phase);
+phase_totAcc = sum(correct_phase)/length(correct_phase);
+
+tempo_contAcc = (max(diff(d2))-1)/length(correct_tempo);
+tempo_totAcc = sum(correct_tempo)/length(correct_tempo);
+
+
+correct_phase;
+correct_tempo;
