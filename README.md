@@ -22,7 +22,7 @@ To get this json shit working, download from git and follow the README, or
 > \>>> json.startup
 
 #### Todo
-1. Add to raw data (i.e. per song info):
+1. Add to per song info:
     * triple the speed, four times the speed, etc.
     * where in the song it stuffs up
     * which tempo we chose (because only one will be right)
@@ -40,6 +40,7 @@ To get this json shit working, download from git and follow the README, or
     * tempo are we most likely to choose (half, double, triple) need give some stats here
     * things that are telling
     	* only one tempo at a time will be correct
+    		* check if the tempo's sum to 1, (total proportion, not cont)
     	* whichever tempo is correct, we look at it's phase alignment.
     	* I'm not sure if the other phases matter (they will if we follow triplets sometimes and half beats at other times)
 
@@ -51,6 +52,7 @@ To get this json shit working, download from git and follow the README, or
     * average score
     * number of zero scores (or scores below 0.2)
     * triplet songs
+5. Not sure if I trust phase_td_cont, what score should it get for ground truth???
 
 ##### Abbreviations
 You may encounter these in the raw data

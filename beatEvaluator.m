@@ -219,9 +219,11 @@ correct_tempo = [0 correct_tempo(:)' 0];
 % now find the boundaries
 [~,d2,~] = find(correct_beats==0);
 correct_beats = correct_beats(2:end-1);
-[~,d2,~] = find(correct_phase==0);
+
+[~,d3,~] = find(correct_phase==0);
 correct_phase = correct_phase(2:end-1);
-[~,d2,~] = find(correct_tempo==0);
+
+[~,d4,~] = find(correct_tempo==0);
 correct_tempo = correct_tempo(2:end-1);
 
 
@@ -230,10 +232,10 @@ correct_tempo = correct_tempo(2:end-1);
 beat_contAcc = (max(diff(d2))-1)/length(correct_beats);
 beat_totAcc = sum(correct_beats)/length(correct_beats);
 
-phase_contAcc = (max(diff(d2))-1)/length(correct_phase);
+phase_contAcc = (max(diff(d3))-1)/length(correct_phase);
 phase_totAcc = sum(correct_phase)/length(correct_phase);
 
-tempo_contAcc = (max(diff(d2))-1)/length(correct_tempo);
+tempo_contAcc = (max(diff(d4))-1)/length(correct_tempo);
 tempo_totAcc = sum(correct_tempo)/length(correct_tempo);
 
 

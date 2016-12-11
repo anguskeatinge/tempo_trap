@@ -66,22 +66,8 @@ for file = [ ref_files'; test_files' ]
     mainscore = amlT;
     backupscores = [amlC, cmlT, cmlC]; % in case of an amlT tie, we can use these as tie-breakers in this order.
 
-
-% Tn_ = normal tempo
-% Td = double tempo
-% Th = half tempo
-
-% Bon = on beat
-% Boff = off beat
-% Bodd = odd beat
-% Beven = even beat
-
-% cont = longest continuously correct
-% tot = total proportion correct
-
-% the first line is for a high level analysis
-% the others are for looking more in depth
-    X = struct('mainscore', mainscore, 'backupscores', backupscores, 'cmlC', cmlC, 'cmlT', cmlT, 'amlC', amlC, 'amlT', amlT,...
+    % raw data
+    X1 = struct('mainscore', mainscore, 'backupscores', backupscores, 'cmlC', cmlC, 'cmlT', cmlT, 'amlC', amlC, 'amlT', amlT,...
         ...
         ...% for captured 'beats'
         'beat_Tn_Bon_cont', beat_cmlCVec(1), 'beat_Tn_Bon_tot', beat_cmlTVec(1),...
@@ -110,68 +96,120 @@ for file = [ ref_files'; test_files' ]
         'tempo_Th_Bodd_cont', tempo_cmlCVec(4), 'tempo_Th_Bodd_tot', tempo_cmlTVec(4),...
         'tempo_Th_Beven_cont', tempo_cmlCVec(5), 'tempo_Th_Beven_tot', tempo_cmlTVec(5)...
         ...
-        );
+    );
+    
+    [tempo_score, tempo_choice] = max( [tempo_cmlTVec(1), tempo_cmlTVec(2), tempo_cmlTVec(3), tempo_cmlTVec(4), tempo_cmlTVec(5)] );
+
+    [beat_score, beat_choice] = max( [beat_cmlTVec(1), beat_cmlTVec(2), beat_cmlTVec(3), beat_cmlTVec(4), beat_cmlTVec(5)] );
+
+    [phase_score, phase_choice] = max( [phase_cmlTVec(1), phase_cmlTVec(2), phase_cmlTVec(3), phase_cmlTVec(4), phase_cmlTVec(5)] );
+
+    % % analytics on raw data
+    % X2 = struct( strcat('beat_choice_', num2str(beat_choice)), beat_score, strcat('phase_choice_', num2str(phase_choice)), phase_score,...
+    %     strcat('tempo_choice_', num2str(tempo_choice)), tempo_score...
+    % );
+
+    X2 = struct( 'beat_choice', [beat_choice, beat_score], 'phase_choice', [phase_choice, phase_score],...
+        'tempo_choice', [tempo_choice, tempo_score]...
+    );
+
+    X = struct('raw', X1, 'analytics', X2);
+
+    % push all the info for this song out.
     S = json.dump(X); % S is simply a string, so I can play around with it...
     S = strcat( '"', file(1).name(1:8), '":', S, ',');
     S_last = strcat(S_last, S );
 
-    % need to put the json crap in here so I can print it out all nice
 
-    % fileID = fopen(outfile, 'a+');
-    % fprintf(fileID, 'testing: %s\nprelim_results: %f\nbackup scores: %f %f %f\n\n', test_file, mainscore, backupscores(1), backupscores(2), backupscores(3) );
-    % fclose(fileID);
+    % if phase_Td_tot*4 < ( max(phase_Tn_Boff_tot, phase_Tn_Bon_tot) - some_fractional_margin )
+    %     only_just_accurate = true;
+    % end
+
+
+    % sum tempo tot's, see if they hit 1 -> good news
 
 
 end
 
+%  finish up and prepare for next stage.
 out = S_last;
-
-% remove the last comma
 out = out(1:end-1);
-
-% close the score object from each guy
-% so I can do analytics
 out = strcat(out, '}}');
-
-% turn the string into a matlab object
 X = json.load(out);
-disp(X);
+% disp(X);
 
 % Now get stats on all of the songs put together.
 
-teststruct = eval(['X.' pretty_algo_name]);
-fields = fieldnames(teststruct);
+data_struct = eval(['X.' pretty_algo_name]);
+fields = fieldnames(data_struct);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  This is where I anned to do my analysis  %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % get all the information out of the songs.
-scores = [];
+
+% collect: which type won? (could there possibly be different for tempo and phase?)
+
+main_scores = [];
+
+beat_scores = [];
+phase_scores = [];
+tempo_scores = [];
+
 for fn=fields'
-    scores = [scores teststruct.(fn{1}).mainscore];
+    main_scores = [main_scores data_struct.(fn{1}).raw.mainscore];
+
+    beat_scores = [beat_scores data_struct.(fn{1}).analytics.beat_choice(2)];
+    phase_scores = [phase_scores data_struct.(fn{1}).analytics.phase_choice(2)];
+    tempo_scores = [tempo_scores data_struct.(fn{1}).analytics.tempo_choice(2)];
 end
+
+
+
 
 % analytics have been collected, put it into a json
 
 % remove the last brace to restart
+% and add the start of the next object
 out = out(1:end-1);
-
-% add the start of the next object
 out = strcat(out, ',"', pretty_algo_name, '_data":{');
 
-% put info into the object
 
-out = strcat(out, strcat( '"mean_score":', num2str(mean(scores)), ',' ));
-out = strcat(out, strcat( '"median_score":', num2str(median(scores)), ',' ));
-out = strcat(out, strcat( '"max_score":', num2str(max(scores)), ',' ));
-out = strcat(out, strcat( '"min_score":', num2str(min(scores)), ',' ));
+
+% put info into the object
+out = strcat(out, strcat( '"mean_score":', num2str(mean(main_scores)), ',' ));
+out = strcat(out, strcat( '"median_score":', num2str(median(main_scores)), ',' ));
+out = strcat(out, strcat( '"max_score":', num2str(max(main_scores)), ',' ));
+out = strcat(out, strcat( '"min_score":', num2str(min(main_scores)), ',' ));
+
+out = strcat(out, strcat( '"beat_mean_score":', num2str(mean(beat_scores)), ',' ));
+out = strcat(out, strcat( '"beat_median_score":', num2str(median(beat_scores)), ',' ));
+out = strcat(out, strcat( '"beat_max_score":', num2str(max(beat_scores)), ',' ));
+out = strcat(out, strcat( '"beat_min_score":', num2str(min(beat_scores)), ',' ));
+
+out = strcat(out, strcat( '"phase_mean_score":', num2str(mean(phase_scores)), ',' ));
+out = strcat(out, strcat( '"phase_median_score":', num2str(median(phase_scores)), ',' ));
+out = strcat(out, strcat( '"phase_max_score":', num2str(max(phase_scores)), ',' ));
+out = strcat(out, strcat( '"phase_min_score":', num2str(min(phase_scores)), ',' ));
+
+out = strcat(out, strcat( '"tempo_mean_score":', num2str(mean(tempo_scores)), ',' ));
+out = strcat(out, strcat( '"tempo_median_score":', num2str(median(tempo_scores)), ',' ));
+out = strcat(out, strcat( '"tempo_max_score":', num2str(max(tempo_scores)), ',' ));
+out = strcat(out, strcat( '"tempo_min_score":', num2str(min(tempo_scores)), ',' ));
+
+X = struct('elements_inside', mainscore, 'this', backupscores);
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'category over X', '":', S, ',');
+out = strcat(out, S );
 
 % remove the last comma
-out = out(1:end-1);
-
 % finish up this object
+% finish up the lot
+out = out(1:end-1);
 out = strcat(out,'}');
-
-% finish up...
 out = strcat(out, '}');
 
 json.write(out, outfile);
-
 
