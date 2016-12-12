@@ -2,7 +2,7 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'r2b2';
+pretty_algo_name = 'btrack';
 algo_name = strcat('_', pretty_algo_name);
 
 % The beats the algorithm measured
@@ -104,13 +104,19 @@ for file = [ ref_files'; test_files' ]
 
     [phase_score, phase_choice] = max( [phase_cmlTVec(1), phase_cmlTVec(2), phase_cmlTVec(3), phase_cmlTVec(4), phase_cmlTVec(5)] );
 
-    % % analytics on raw data
-    % X2 = struct( strcat('beat_choice_', num2str(beat_choice)), beat_score, strcat('phase_choice_', num2str(phase_choice)), phase_score,...
-    %     strcat('tempo_choice_', num2str(tempo_choice)), tempo_score...
-    % );
+
+    % if phase_Td_tot*4 < ( max(phase_Tn_Boff_tot, phase_Tn_Bon_tot) - some_fractional_margin )
+    %     only_just_accurate = true;
+    % end
+
+
+    % sum tempo tot's, see if they hit 1 -> good news
+    sum_of_tempo_scores = sum( [tempo_cmlTVec(3), max(tempo_cmlTVec(1),tempo_cmlTVec(2)), max(tempo_cmlTVec(4),tempo_cmlTVec(5))] );
+
 
     X2 = struct( 'beat_choice', [beat_choice, beat_score], 'phase_choice', [phase_choice, phase_score],...
-        'tempo_choice', [tempo_choice, tempo_score]...
+        'tempo_choice', [tempo_choice, tempo_score],...
+        'sum_of_tempo_scores', sum_of_tempo_scores...
     );
 
     X = struct('raw', X1, 'analytics', X2);
@@ -119,15 +125,6 @@ for file = [ ref_files'; test_files' ]
     S = json.dump(X); % S is simply a string, so I can play around with it...
     S = strcat( '"', file(1).name(1:8), '":', S, ',');
     S_last = strcat(S_last, S );
-
-
-    % if phase_Td_tot*4 < ( max(phase_Tn_Boff_tot, phase_Tn_Bon_tot) - some_fractional_margin )
-    %     only_just_accurate = true;
-    % end
-
-
-    % sum tempo tot's, see if they hit 1 -> good news
-
 
 end
 
@@ -158,15 +155,61 @@ beat_scores = [];
 phase_scores = [];
 tempo_scores = [];
 
+beat_choices = [];
+
+really_poor_performers = [];
+scores_for_sum_of_tempo_scores = [];
+
 for fn=fields'
     main_scores = [main_scores data_struct.(fn{1}).raw.mainscore];
 
     beat_scores = [beat_scores data_struct.(fn{1}).analytics.beat_choice(2)];
     phase_scores = [phase_scores data_struct.(fn{1}).analytics.phase_choice(2)];
     tempo_scores = [tempo_scores data_struct.(fn{1}).analytics.tempo_choice(2)];
+    
+    scores_for_sum_of_tempo_scores = [ scores_for_sum_of_tempo_scores data_struct.(fn{1}).analytics.sum_of_tempo_scores ];
+
+    beat_choices = [beat_choices data_struct.(fn{1}).analytics.beat_choice(1)];
+
+    if data_struct.(fn{1}).analytics.sum_of_tempo_scores < 0.8
+        temp_val = data_struct.(fn{1}).analytics.sum_of_tempo_scores;
+        really_poor_performers = [ really_poor_performers, struct('name',fn{1}, 'val', temp_val) ];
+    end
+
 end
 
+really_poor_performers
+beat_scores
+main_scores
+mean(main_scores)
+% really_poor_performers__new = [];
+% for val = really_poor_performers
+%     really_poor_performers__new = {really_poor_performers, }
+% end
 
+% mat2str(really_poor_performers)
+
+normal_time_on_beat_count = sum(beat_choices(:) == 1);
+normal_time_off_beat_count = sum(beat_choices(:) == 2);
+double_time_count = sum(beat_choices(:) == 3);
+half_time_odd_beat_count = sum(beat_choices(:) == 4);
+half_time_even_beat_count = sum(beat_choices(:) == 5);
+
+switch mode(beat_choices)
+    case 1
+        most_popular_beat_choice = 'normal_time_on_beat';
+    case 2
+        most_popular_beat_choice = 'normal_time_off_beat';
+    case 3
+        most_popular_beat_choice = 'double_time';
+    case 4
+        most_popular_beat_choice = 'half_time_odd_beat';
+    case 5
+        most_popular_beat_choice = 'half_time_even_beat';
+    otherwise
+        return
+end
+most_popular_beat_choice_count = sum(beat_choices(:) == mode(beat_choices));
 
 
 % analytics have been collected, put it into a json
@@ -177,32 +220,61 @@ out = out(1:end-1);
 out = strcat(out, ',"', pretty_algo_name, '_data":{');
 
 
-
-% put info into the object
-out = strcat(out, strcat( '"mean_score":', num2str(mean(main_scores)), ',' ));
-out = strcat(out, strcat( '"median_score":', num2str(median(main_scores)), ',' ));
-out = strcat(out, strcat( '"max_score":', num2str(max(main_scores)), ',' ));
-out = strcat(out, strcat( '"min_score":', num2str(min(main_scores)), ',' ));
-
-out = strcat(out, strcat( '"beat_mean_score":', num2str(mean(beat_scores)), ',' ));
-out = strcat(out, strcat( '"beat_median_score":', num2str(median(beat_scores)), ',' ));
-out = strcat(out, strcat( '"beat_max_score":', num2str(max(beat_scores)), ',' ));
-out = strcat(out, strcat( '"beat_min_score":', num2str(min(beat_scores)), ',' ));
-
-out = strcat(out, strcat( '"phase_mean_score":', num2str(mean(phase_scores)), ',' ));
-out = strcat(out, strcat( '"phase_median_score":', num2str(median(phase_scores)), ',' ));
-out = strcat(out, strcat( '"phase_max_score":', num2str(max(phase_scores)), ',' ));
-out = strcat(out, strcat( '"phase_min_score":', num2str(min(phase_scores)), ',' ));
-
-out = strcat(out, strcat( '"tempo_mean_score":', num2str(mean(tempo_scores)), ',' ));
-out = strcat(out, strcat( '"tempo_median_score":', num2str(median(tempo_scores)), ',' ));
-out = strcat(out, strcat( '"tempo_max_score":', num2str(max(tempo_scores)), ',' ));
-out = strcat(out, strcat( '"tempo_min_score":', num2str(min(tempo_scores)), ',' ));
-
-X = struct('elements_inside', mainscore, 'this', backupscores);
+X = struct('mean', mean(main_scores),...
+    'median', median(main_scores),...
+    'max', max(main_scores),...
+    'min', min(main_scores) );
 S = json.dump(X); % S is simply a string, so I can play around with it...
-S = strcat( '"', 'category over X', '":', S, ',');
+S = strcat( '"', 'official', '":', S, ',');
 out = strcat(out, S );
+
+X = struct('mean', mean(beat_scores),...
+    'median', median(beat_scores),...
+    'max', max(beat_scores),...
+    'min', min(beat_scores) );
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'beat', '":', S, ',');
+out = strcat(out, S );
+
+X = struct('mean', mean(phase_scores),...
+    'median', median(phase_scores),...
+    'max', max(phase_scores),...
+    'min', min(phase_scores) );
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'phase', '":', S, ',');
+out = strcat(out, S );
+
+X = struct('mean', mean(tempo_scores),...
+    'median', median(tempo_scores),...
+    'max', max(tempo_scores),...
+    'min', min(tempo_scores) );
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'tempo', '":', S, ',');
+out = strcat(out, S );
+
+X = struct('mean', mean(scores_for_sum_of_tempo_scores),...
+    'median', median(scores_for_sum_of_tempo_scores),...
+    'max', max(scores_for_sum_of_tempo_scores),...
+    'min', min(scores_for_sum_of_tempo_scores),...
+    'num_of_poor_performers', length(really_poor_performers),...
+    'really_poor_performers', {[really_poor_performers]}...
+);
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'sum_of_tempos', '":', S, ',');
+out = strcat(out, S );
+
+% have something that converts an index to a string
+X = struct('most_popular', struct( most_popular_beat_choice, most_popular_beat_choice_count ),...
+    'normal_time_on_beat', normal_time_on_beat_count,...
+    'normal_time_off_beat', normal_time_off_beat_count,...
+    'double_time', double_time_count,...
+    'half_time_odd_beat', half_time_odd_beat_count,...
+    'half_time_even_beat', half_time_even_beat_count...
+);
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'beat_choices', '":', S, ',');
+out = strcat(out, S );
+
 
 % remove the last comma
 % finish up this object

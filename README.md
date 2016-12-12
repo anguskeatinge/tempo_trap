@@ -36,6 +36,7 @@ To get this json shit working, download from git and follow the README, or
     	* best phase
     	* 
     * get averages of the different measures
+    * count how often certain measures hit a benchmark
     * which measure it performs the best at
     * tempo are we most likely to choose (half, double, triple) need give some stats here
     * things that are telling
