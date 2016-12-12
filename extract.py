@@ -7,13 +7,21 @@ import sys
 # algo = 'essentia_multifeature'
 # algo = 'ellis_beat2'
 
-algo = 'r2b2'
+algos = ['ground_truth', 'essentia_multifeature', 'ellis_beat2', 'btrack', 'r2b2', 'r2b2_a']
 
-with open("results/" + algo + ".json") as data_file:
-    data = json.load(data_file)
+for algo in algos:
 
-for key in data:
-    if key.endswith('data'):
-        pprint(data[key])
+	with open("results/" + algo + ".json") as data_file:
+	    data = json.load(data_file)
+
+	print ("")
+	print ("XXXXXXXXXX")
+	print ("Algorithm: " + algo)
+	print ("XXXXXXXXXX")
+	print ("")
+
+	for key in data:
+	    if key.endswith('data'):
+	        pprint(data[key])
 
 
