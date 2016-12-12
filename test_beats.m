@@ -2,7 +2,7 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'essentia_multifeature';
+pretty_algo_name = 'r2b3_2';
 algo_name = strcat('_', pretty_algo_name);
 
 % The beats the algorithm measured
@@ -17,15 +17,15 @@ formatSpec = '%f';
 % set up the filename, there are going to be a bunch of different things to test.
 num = 0;
 while true
-    if not(exist(strcat('prelim_results/', pretty_algo_name, '.json'), 'file') == 2)
-        outfile = strcat('prelim_results/', pretty_algo_name, '.json');
+    if not(exist(strcat('results/', pretty_algo_name, '.json'), 'file') == 2)
+        outfile = strcat('results/', pretty_algo_name, '.json');
         break
 
-    elseif exist(strcat('prelim_results/', pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
+    elseif exist(strcat('results/', pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
         num = num + 1;
 
     else
-        outfile = strcat('prelim_results/', pretty_algo_name, '_', int2str(num), '.json');
+        outfile = strcat('results/', pretty_algo_name, '_', int2str(num), '.json');
         break
     end
 end
@@ -177,6 +177,21 @@ for fn=fields'
     end
 
 end
+
+% plot the data
+% hold on
+% boxplot(main_scores,'official',1)
+plot_matrix(:,1) = main_scores;
+plot_matrix(:,2) = beat_scores;
+plot_matrix(:,3) = phase_scores;
+plot_matrix(:,4) = tempo_scores;
+plot_matrix(:,5) = scores_for_sum_of_tempo_scores;
+% boxplot(beat_scores,'beat',1)
+% boxplot(phase_scores,'phase',1)
+% boxplot(tempo_scores,'tempo',1)
+% boxplot(scores_for_sum_of_tempo_scores,'sum_of_tempo',1)
+boxplot(plot_matrix);
+% hold off
 
 really_poor_performers
 beat_scores

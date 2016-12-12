@@ -6,7 +6,7 @@
 data_dir = '../music/open'
 data_files = dir( strcat(data_dir, '/*.wav') );
 
-results_dir = '../music/open/_r2b2_1/';
+results_dir = '../music/open/_r2b3_3/';
 
 data_files.name;
 
