@@ -1,3 +1,6 @@
+% tests the beats of a dataset
+
+
 % The reference beats
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );

@@ -1,9 +1,10 @@
 
-
-
+clear data_files data_dir dir
+addpath('../R2B2');
 % goes through and annotates data for all songs in a set
 
-data_dir = '../music/open'
+data_dir = '../music/open';
+% data_dir = '../music/open/_test'; % for testing a single song
 data_files = dir( strcat(data_dir, '/*.wav') );
 
 results_dir = '../music/open/_r2b3_3/';
@@ -18,6 +19,7 @@ for file = data_files'
     strcat( name, ext )
 
     diary(strcat(results_dir, name, '.txt'));
+    % diary(strcat( name, '.txt')); % for testing a single song
     diary on
     r2b2( strcat( name, ext ), data_dir );
     % strcat( results_dir, name, ext )

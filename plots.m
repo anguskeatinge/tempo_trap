@@ -1,3 +1,4 @@
+% makes boxplots from results.
 
 test_files = dir( strcat( 'results/*.json') );
 

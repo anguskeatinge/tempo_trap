@@ -1,5 +1,6 @@
 # Benchmark
 [Current benchmark status](./scores.csv "fuck off")
+[View benchmark plots](./plots.md "James has a fanny")
 
 ### How it works
 * 'test_beats.m' gets scores from 'beatEvaluator.m' for all 25 songs of the open dataset.
