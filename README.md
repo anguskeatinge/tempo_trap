@@ -57,6 +57,23 @@ To get this json shit working, download from git and follow the README, or
     * triplet songs
 5. Not sure if I trust phase_td_cont, what score should it get for ground truth???
 
+6. General
+    * see if phase estimate is lagging I could plot the difference.
+    * Streamlining, single button testing suite.
+        * one matlab, one shell, one python
+    * have only a handful of numbers that I push out to the csv (many more isn't useful)
+        * official mean
+        * very poor results
+        * tempo choices     *> the best and the rest.
+        * plot the stats stuff, have them all next to each other.
+            * I can do that from matlab
+            * just have one image on git
+            * one image per stat that I am testing ie. beat, phase, tempo, etc.
+        * 
+    * get from raw data
+        * see if phase estimate is lagging I could plot the difference.
+    * neaten up plots
+
 ##### Abbreviations
 You may encounter these in the raw data
 * Tn = normal tempo
