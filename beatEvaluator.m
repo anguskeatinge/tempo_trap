@@ -69,6 +69,15 @@ if (and(isempty(detections),isempty(annotations)))
     cmlT = 1;
     amlC = 1;
     amlT = 1;
+
+    % beat_cmlCVec = [];
+    % beat_cmlTVec = [];
+    % phase_cmlCVec = [];
+    % phase_cmlTVec = [];
+    % tempo_cmlCVec = [];
+    % tempo_cmlTVec = [];
+    % offsets = [];
+    disp('everything is empty yo');
     return
 end
 if (or(isempty(detections),isempty(annotations)))
@@ -76,6 +85,15 @@ if (or(isempty(detections),isempty(annotations)))
     cmlT = 0;
     amlC = 0;
     amlT = 0;
+    
+    % beat_cmlCVec = [];
+    % beat_cmlTVec = [];
+    % phase_cmlCVec = [];
+    % phase_cmlTVec = [];
+    % tempo_cmlCVec = [];
+    % tempo_cmlTVec = [];
+    % offsets = [];
+    disp('everything is empty yo');
     return
 end
 
@@ -84,6 +102,14 @@ if (length(annotations)<2)
     cmlT = [];
     amlC = [];
     amlT = [];
+
+    % beat_cmlCVec = [];
+    % beat_cmlTVec = [];
+    % phase_cmlCVec = [];
+    % phase_cmlTVec = [];
+    % tempo_cmlCVec = [];
+    % tempo_cmlTVec = [];
+    % offsets = [];
     disp('At least two annotations (after the minBeatTime) are needed for continuity scores');
     return
 end

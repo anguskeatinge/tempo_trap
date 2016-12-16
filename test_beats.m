@@ -5,7 +5,7 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'r2b2_aggregator';
+pretty_algo_name = 'ibt';
 algo_name = strcat('_', pretty_algo_name);
 
 % The beats the algorithm measured

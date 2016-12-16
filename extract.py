@@ -8,7 +8,7 @@ import sys
 # algo = 'ellis_beat2'
 
 algos = ['ground_truth', 'essentia_multifeature', 'ellis_beat2', 'btrack', 'r2b2_aggregator', 'r2b2_master',
-	'r2b3', 'r2b3_1', 'r2b3_2']
+	'r2b3', 'r2b3_1', 'r2b3_2', 'ibt']
 
 for algo in algos:
 
