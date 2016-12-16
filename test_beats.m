@@ -5,7 +5,7 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'r2b3_2';
+pretty_algo_name = 'r2b2_aggregator';
 algo_name = strcat('_', pretty_algo_name);
 
 % The beats the algorithm measured
@@ -37,6 +37,11 @@ end
 % add the opening brace and first object
 S_last = strcat('{"', pretty_algo_name, '":{');
 
+median_offsets = [];
+i = 1;
+offsets_plot = [];
+offsets_grp = [];
+
 for file = [ ref_files'; test_files' ]
     % I should make sure that I'm comparing the right files here.
     ref_file = strcat( ref_dir, file(1).name );
@@ -51,8 +56,18 @@ for file = [ ref_files'; test_files' ]
     fclose(fileID);
 
     % Need to retrieve a whole bunch more info from here, how?
-    [ beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec ] = ...
+    [ beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, offsets ] = ...
     beatEvaluator(detections',annotations');
+
+    median_offsets = [median_offsets median(offsets)];
+    % offsets
+    % offsets_plot_matrix
+    offsets_plot = [ offsets_plot, offsets ];
+
+    offsets_grp = [ offsets_grp, (i)*ones( 1, length(offsets) ) ];
+
+    i = i + 1;
+    
 
 
     % assign the accuracy scores
@@ -97,8 +112,9 @@ for file = [ ref_files'; test_files' ]
         'tempo_Td_cont', tempo_cmlCVec(3), 'tempo_Td_tot', tempo_cmlTVec(3),...
         ...
         'tempo_Th_Bodd_cont', tempo_cmlCVec(4), 'tempo_Th_Bodd_tot', tempo_cmlTVec(4),...
-        'tempo_Th_Beven_cont', tempo_cmlCVec(5), 'tempo_Th_Beven_tot', tempo_cmlTVec(5)...
+        'tempo_Th_Beven_cont', tempo_cmlCVec(5), 'tempo_Th_Beven_tot', tempo_cmlTVec(5),...
         ...
+        'offsets', offsets...
     );
     
     [tempo_score, tempo_choice] = max( [tempo_cmlTVec(1), tempo_cmlTVec(2), tempo_cmlTVec(3), tempo_cmlTVec(4), tempo_cmlTVec(5)] );
@@ -119,7 +135,8 @@ for file = [ ref_files'; test_files' ]
 
     X2 = struct( 'beat_choice', [beat_choice, beat_score], 'phase_choice', [phase_choice, phase_score],...
         'tempo_choice', [tempo_choice, tempo_score],...
-        'sum_of_tempo_scores', sum_of_tempo_scores...
+        'sum_of_tempo_scores', sum_of_tempo_scores,...
+        'offsets_median', median(offsets)...
     );
 
     X = struct('raw', X1, 'analytics', X2);
@@ -130,6 +147,15 @@ for file = [ ref_files'; test_files' ]
     S_last = strcat(S_last, S );
 
 end
+
+figure(figHandle1);
+boxplot(offsets_plot, offsets_grp);
+title('beat offsets');
+ylabel('positive -> lagging detection (seconds)');
+xlabel('song number');
+
+
+grid on;
 
 %  finish up and prepare for next stage.
 out = S_last;
@@ -182,26 +208,26 @@ for fn=fields'
 end
 
 clear plot_matrix;
+
 % plot the data
-% hold on
-% boxplot(main_scores,'official',1)
-plot_matrix(:,1) = main_scores;
-plot_matrix(:,2) = beat_scores;
-plot_matrix(:,3) = phase_scores;
-plot_matrix(:,4) = tempo_scores;
-plot_matrix(:,5) = scores_for_sum_of_tempo_scores;
-% boxplot(beat_scores,'beat',1)
-% boxplot(phase_scores,'phase',1)
-% boxplot(tempo_scores,'tempo',1)
-% boxplot(scores_for_sum_of_tempo_scores,'sum_of_tempo',1)
-% boxplot(plot_matrix);
-% boxplot(plot_matrix, 'PlotStyle', 'compact');
-% hold off
+figure(figHandle2);
+i = 1;
+plot_matrix(:,i) = main_scores;
+i = i + 1;
+plot_matrix(:,i) = beat_scores;
+i = i + 1;
+plot_matrix(:,i) = phase_scores;
+i = i + 1;
+plot_matrix(:,i) = tempo_scores;
+i = i + 1;
+plot_matrix(:,i) = scores_for_sum_of_tempo_scores;
+boxplot(plot_matrix);
 
 really_poor_performers
-beat_scores
 main_scores
-mean(main_scores)
+% mean(main_scores)
+mean(median_offsets)
+median_offsets
 % really_poor_performers__new = [];
 % for val = really_poor_performers
 %     really_poor_performers__new = {really_poor_performers, }
@@ -292,6 +318,14 @@ X = struct('most_popular', struct( most_popular_beat_choice, most_popular_beat_c
 );
 S = json.dump(X); % S is simply a string, so I can play around with it...
 S = strcat( '"', 'beat_choices', '":', S, ',');
+out = strcat(out, S );
+
+
+X = struct('mean_of_medians', mean(median_offsets),...
+    'median_array', median_offsets...
+);
+S = json.dump(X); % S is simply a string, so I can play around with it...
+S = strcat( '"', 'offsets', '":', S, ',');
 out = strcat(out, S );
 
 

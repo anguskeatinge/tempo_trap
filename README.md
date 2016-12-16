@@ -13,15 +13,13 @@
 * python extract.py <algo name> <regex pattern for scraping the results>
 
 #### Beat trackers I still need to get results from for benchmark
-1. ellis' beat_simple
-2. ibt (from Jerry)
-3. ALL OF OURS
+1. ibt (from Jerry)
+2. ALL OF OURS
 
 #### JSON
 [source code for the matlab json interface](https://github.com/kyamagu/matlab-json "you silly cunt")
 To get this json shit working, download from git and follow the README, or
-> \>>> addpath "path/to/json-shit"
-> \>>> json.startup
+> \>>> init
 
 #### Todo
 1. Add to per song info:

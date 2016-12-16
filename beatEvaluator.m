@@ -1,4 +1,4 @@
-function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = beatEvaluator(detections,annotations)
+function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, offsets] = beatEvaluator(detections,annotations)
 
 
 %  function [mainscore, backupscores]= beatEvaluator(detections,annotations)
@@ -51,9 +51,9 @@ phase_tolerance = 0.175;
 tempo_tolerance = 0.175;
 
 % run the evaluation code
-[beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime);
+[beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, offsets] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime);
 
-function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime)
+function [beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, offsets] = continuity(detections,annotations,tempo_tolerance,phase_tolerance,minBeatTime)
 
 % put the beats and annotations into column vectors
 annotations = annotations(:);
@@ -142,13 +142,21 @@ phase_cmlTVec = zeros(1,numVariations);
 tempo_cmlCVec = zeros(1,numVariations);
 tempo_cmlTVec = zeros(1,numVariations);
 
+offsets = 0;
+phase_cmlTVec_last = 0;
+
 % loop analysis over number of variants on annotations
 for j=1:numVariations,
-    [beat_cmlCVec(j),beat_cmlTVec(j),phase_cmlCVec(j),phase_cmlTVec(j),tempo_cmlCVec(j),tempo_cmlTVec(j)] = ContinuityEval(detections,variations{j},tempo_tolerance,phase_tolerance);
+    [beat_cmlCVec(j),beat_cmlTVec(j),phase_cmlCVec(j),phase_cmlTVec(j),tempo_cmlCVec(j),tempo_cmlTVec(j), offsets_new] = ContinuityEval(detections,variations{j},tempo_tolerance,phase_tolerance);
+    % we will take the offsets array from whichever phase thing scored the highest
+    if mean(phase_cmlTVec) > mean(phase_cmlTVec_last)
+        phase_cmlTVec_last = phase_cmlTVec;
+        offsets = offsets_new;
+    end
 end
 
 
-function [beat_contAcc, beat_totAcc, phase_contAcc, phase_totAcc, tempo_contAcc, tempo_totAcc] = ContinuityEval(detections,annotations,tempo_tolerance,phase_tolerance)
+function [beat_contAcc, beat_totAcc, phase_contAcc, phase_totAcc, tempo_contAcc, tempo_totAcc, offsets] = ContinuityEval(detections,annotations,tempo_tolerance,phase_tolerance)
 % sub-function for calculating continuity-based accuracy
 
 if (length(annotations)<2)
@@ -170,11 +178,17 @@ correct_phase = zeros(1,max(length(annotations),length(detections)));
 % tempo condition
 correct_tempo = zeros(1,max(length(annotations),length(detections)));
 
+% offsets = zeros(1,length(detections));
+offsets = [];
+
 for i=1:length(detections)
     
     % find the closest annotation and the signed offset
     [~,closest] = min(  abs( annotations-detections(i) )  );
     signed_offset = detections(i)-annotations(closest);
+    % neg = ann > det => leading
+    % pos = ann < det => lagging
+    % closest
     
     % first deal with the phase condition
     tolerance_window = zeros(1,2); % clear each time.
@@ -203,6 +217,12 @@ for i=1:length(detections)
     
     % find out if the relative intervals of detections to annotations are less than the tolerance
     correct_tempo(i) = ((abs(1-(detection_interval/annotation_interval))) <= (tempo_tolerance));
+
+    if correct_phase(i)
+        % signed_offset = signed_offset / (annotation_interval); % percentage offset
+        % signed_offset = signed_offset / (annotation_interval * phase_tolerance); % percentage offset within window
+        offsets = [ offsets, signed_offset ];
+    end
     
 end
 
