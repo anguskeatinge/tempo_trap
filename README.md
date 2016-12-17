@@ -12,10 +12,6 @@
 * download 'results/' and 'extract.py'
 * python extract.py <algo name> <regex pattern for scraping the results>
 
-#### Beat trackers I still need to get results from for benchmark
-1. ibt (from Jerry)
-2. ALL OF OURS
-
 #### JSON
 [source code for the matlab json interface](https://github.com/kyamagu/matlab-json "you silly cunt")
 To get this json shit working, download from git and follow the README, or
@@ -24,29 +20,10 @@ To get this json shit working, download from git and follow the README, or
 #### Todo
 1. Add to per song info:
     * triple the speed, four times the speed, etc.
-    * where in the song it stuffs up
-    * which tempo we chose (because only one will be right)
-        * look out for switching between tempos
-        * express these as percentages maybe.
-    * which beat we chose (i.e. odd, even, on, off)
 
 2. Analysis of data (i.e. per algo info):
-	* make a generous score (and say which one it is)
-    	* best tempo
-    	* best phase
-    	* 
-    * get averages of the different measures
-    * get quantiles instead of just different 
     * find the difference between sum_of_tempos and the top tempo choice
     * count how often certain measures hit a benchmark
-    * which measure it performs the best at
-    * tempo are we most likely to choose (half, double, triple) need give some stats here
-    * things that are telling
-    	* only one tempo at a time will be correct
-    		* check if the tempo's sum to 1, (total proportion, not cont)
-    	* whichever tempo is correct, we look at it's phase alignment.
-    	* I'm not sure if the other phases matter (they will if we follow triplets sometimes and half beats at other times)
-
 
 3. Update python script to selectively extract info from algo analysis beacause this is starting to be a bit much.
 
@@ -58,7 +35,6 @@ To get this json shit working, download from git and follow the README, or
 5. Not sure if I trust phase_td_cont, what score should it get for ground truth???
 
 6. General
-    * see if phase estimate is lagging I could plot the difference.
     * Streamlining, single button testing suite.
         * one matlab, one shell, one python
     * have only a handful of numbers that I push out to the csv (many more isn't useful)
@@ -70,8 +46,6 @@ To get this json shit working, download from git and follow the README, or
             * just have one image on git
             * one image per stat that I am testing ie. beat, phase, tempo, etc.
         * 
-    * get from raw data
-        * see if phase estimate is lagging I could plot the difference.
     * neaten up plots
 
 ##### Abbreviations
