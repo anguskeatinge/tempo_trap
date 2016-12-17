@@ -20,33 +20,23 @@ To get this json shit working, download from git and follow the README, or
 #### Todo
 1. Add to per song info:
     * triple the speed, four times the speed, etc.
+    * difference between double scores and it's score.
 
 2. Analysis of data (i.e. per algo info):
     * find the difference between sum_of_tempos and the top tempo choice
     * count how often certain measures hit a benchmark
 
-3. Update python script to selectively extract info from algo analysis beacause this is starting to be a bit much.
-
-4. Classify songs:
+3. Classify songs:
     * easy and hard
     * average score
     * number of zero scores (or scores below 0.2)
     * triplet songs
-5. Not sure if I trust phase_td_cont, what score should it get for ground truth???
 
-6. General
-    * Streamlining, single button testing suite.
-        * one matlab, one shell, one python
-    * have only a handful of numbers that I push out to the csv (many more isn't useful)
-        * official mean
-        * very poor results
-        * tempo choices     *> the best and the rest.
-        * plot the stats stuff, have them all next to each other.
-            * I can do that from matlab
-            * just have one image on git
-            * one image per stat that I am testing ie. beat, phase, tempo, etc.
-        * 
-    * neaten up plots
+4. Not sure if I trust phase_td_cont, what score should it get for ground truth???
+
+5. Streamlining:
+    * single button testing suite.
+    * one matlab, one shell, one python
 
 ##### Abbreviations
 You may encounter these in the raw data

@@ -1,0 +1,17 @@
+r2b3: master
+
+START FROM MASTER
+r2b3_a: changed the viterbi summing to a maximisation
+
+r2b3_b: changed feature window size from 6s to 3s
+
+
+BACK TO MASTER
+r2b3_c:	changed the lowpass in odfklapuri from 10 to 15 (big improvement) ~ 15%
+
+r2b3_d: changed the lowpass in odfklapuri from 10 to 15
+		changed the viterbi summing to a maximisation
+
+r2b3_e: changed the lowpass in odfklapuri from 10 to 15
+		changed the viterbi summing to a maximisation
+		apply fully sick window in the viterbi algo

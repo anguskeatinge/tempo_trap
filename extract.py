@@ -68,13 +68,16 @@ elif not all_vars:
     for variable in variables:
         print("")
         if len(variable) == 1:
-            print(variable[0] + ':')
+            print("\n\n")
+            print("XXXXXXX ", variable[0] + ':')
 
         elif len(variable) == 2:
-            print(variable[0] + '{' + variable[1] + '} :')
+            print("\n\n")
+            print("XXXXXXX ", variable[0] + '{' + variable[1] + '} :')
 
         elif len(variable) == 3:
-            print(variable[0] + '{' + variable[1] + '}{' + variable[2] + '} :')
+            print("\n\n")
+            print("XXXXXXX ", variable[0] + '{' + variable[1] + '}{' + variable[2] + '} :')
 
         else:
             print("yo fucked up...")
@@ -85,15 +88,16 @@ elif not all_vars:
             with open(algo) as data_file:
                 data = json.load(data_file)
 
-            print ("Algorithm: " + algo + ":")
+            algo = re.sub('results/', '', algo)
+            algo = re.sub('\.json', '', algo)
 
             for key in data:
                 if key.endswith('data'):
                     if len(variable) == 1:
-                        print(data[key][variable[0]])
+                        print( "\nAlgorithm: " + algo + ":\n\t", data[key][variable[0]] )
 
                     if len(variable) == 2:
-                        print("\t",data[key][variable[0]][variable[1]])
+                        print( "\nAlgorithm: " + algo + ":\n\t", data[key][variable[0]][variable[1]] )
 
 
 

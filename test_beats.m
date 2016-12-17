@@ -5,7 +5,7 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'ibt';
+pretty_algo_name = 'r2b3_e'
 algo_name = strcat('_', pretty_algo_name);
 
 % The beats the algorithm measured
@@ -148,14 +148,12 @@ for file = [ ref_files'; test_files' ]
 
 end
 
-figure(figHandle1);
-boxplot(offsets_plot, offsets_grp);
-title('beat offsets');
-ylabel('positive -> lagging detection (seconds)');
-xlabel('song number');
-
-
-grid on;
+% figure(figHandle1);
+% boxplot(offsets_plot, offsets_grp);
+% title('beat offsets');
+% ylabel('positive -> lagging detection (seconds)');
+% xlabel('song number');
+% grid on;
 
 %  finish up and prepare for next stage.
 out = S_last;
@@ -210,7 +208,7 @@ end
 clear plot_matrix;
 
 % plot the data
-figure(figHandle2);
+% figure(figHandle2);
 i = 1;
 plot_matrix(:,i) = main_scores;
 i = i + 1;
@@ -221,13 +219,13 @@ i = i + 1;
 plot_matrix(:,i) = tempo_scores;
 i = i + 1;
 plot_matrix(:,i) = scores_for_sum_of_tempo_scores;
-boxplot(plot_matrix);
+% boxplot(plot_matrix);
 
-really_poor_performers
-main_scores
+% really_poor_performers
+% main_scores
 % mean(main_scores)
-mean(median_offsets)
-median_offsets
+% mean(median_offsets)
+% median_offsets
 % really_poor_performers__new = [];
 % for val = really_poor_performers
 %     really_poor_performers__new = {really_poor_performers, }

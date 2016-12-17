@@ -2,7 +2,12 @@
 
 test_files = dir( strcat( 'results/*.json') );
 
-test_files.name;
+
+clear main_plot_matrix;
+clear beat_plot_matrix;
+clear phase_plot_matrix;
+clear tempo_plot_matrix;
+clear sum_of_tempo_plot_matrix;
 
 
 count = 1;
@@ -14,7 +19,10 @@ for fname = [test_files']
 		s = s( (length(s)-4):(length(s) - 1) );
 
 		if strcmp(s , 'data')
-			key{1}
+
+			fname.name;
+			key{1};
+
 			sum_of_tempos = X.(key{1}).sum_of_tempos.array;
 			beat = X.(key{1}).beat.array;
 			tempo = X.(key{1}).tempo.array;
@@ -26,38 +34,51 @@ for fname = [test_files']
 			phase_plot_matrix(:,count) = phase;
 			tempo_plot_matrix(:,count) = tempo;
 			sum_of_tempo_plot_matrix(:,count) = sum_of_tempos;
+			count = count + 1;
 
 		else
 			X.(key{1});
 		end
 	end
 
-	count = count + 1;
+	
 end
 
+
 main_plot_matrix
+length(test_files')
+
 
 figure
 
 boxplot(main_plot_matrix);
-title ('mean of official scores');
+title ('official scores');
+set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
 
 figure
 
 boxplot(beat_plot_matrix);
 title ('beat');
+set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+
 
 figure
 
 boxplot(phase_plot_matrix);
 title ('phase');
+set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+
 
 figure
 
 boxplot(tempo_plot_matrix);
 title ('tempo');
+set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+
 
 figure
 
 boxplot(sum_of_tempo_plot_matrix);
 title ('sum of tempos (generous scores)');
+set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+
