@@ -3,7 +3,7 @@
 test_files = dir( strcat( 'results/*.json') );
 
 
-clear main_plot_matrix;
+clear official_plot_matrix;
 clear beat_plot_matrix;
 clear phase_plot_matrix;
 clear tempo_plot_matrix;
@@ -29,11 +29,21 @@ for fname = [test_files']
 			official = X.(key{1}).official.array;
 			phase = X.(key{1}).phase.array;
 
-			main_plot_matrix(:,count) = official;
+			official_plot_matrix(:,count) = official;
+			official_mean(count) = mean(official);
+
 			beat_plot_matrix(:,count) = beat;
+			beat_mean(count) = mean(beat);
+			
 			phase_plot_matrix(:,count) = phase;
+			phase_mean(count) = mean(phase);
+			
 			tempo_plot_matrix(:,count) = tempo;
+			tempo_mean(count) = mean(tempo);
+			
 			sum_of_tempo_plot_matrix(:,count) = sum_of_tempos;
+			sum_of_tempo_mean(count) = mean(sum_of_tempos);
+			
 			count = count + 1;
 
 		else
@@ -45,21 +55,29 @@ for fname = [test_files']
 end
 
 
-main_plot_matrix
+official_plot_matrix
 length(test_files')
 
 
 figure
 
-boxplot(main_plot_matrix);
+boxplot(official_plot_matrix);
 title ('official scores');
 set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+grid on
+hold on
+scatter([1:length(official_mean)],[official_mean],'marker','o')
+hold off
 
 figure
 
 boxplot(beat_plot_matrix);
 title ('beat');
 set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+grid on
+hold on
+scatter([1:length(beat_mean)],[beat_mean],'marker','o')
+hold off
 
 
 figure
@@ -67,6 +85,10 @@ figure
 boxplot(phase_plot_matrix);
 title ('phase');
 set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+grid on
+hold on
+scatter([1:length(phase_mean)],[phase_mean],'marker','o')
+hold off
 
 
 figure
@@ -74,6 +96,10 @@ figure
 boxplot(tempo_plot_matrix);
 title ('tempo');
 set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+grid on
+hold on
+scatter([1:length(tempo_mean)],[tempo_mean],'marker','o')
+hold off
 
 
 figure
@@ -81,4 +107,8 @@ figure
 boxplot(sum_of_tempo_plot_matrix);
 title ('sum of tempos (generous scores)');
 set(gca,'xtick',[1:length(test_files')],'xticklabel',{test_files.name}, 'XTickLabelRotation',45)
+grid on
+hold on
+scatter([1:length(sum_of_tempo_mean)],[sum_of_tempo_mean],'marker','o')
+hold off
 
