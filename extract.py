@@ -11,6 +11,13 @@ try:
     algo = sys.argv[1]
     variable = sys.argv[2]
 
+    try:
+        directory = sys.argv[3]
+    except Exception as e:
+        directory = 0;
+
+    pprint("I need to fix up extract.py to work with a directory input")
+
     # retieve algos from here.
     
     if algo.lower() == "all":
@@ -22,11 +29,11 @@ try:
 
     if variable.lower() == "all":
         all_vars = True
-    
+
     else:
         all_vars = False
         _variables = re.findall(r'([^,]+),', variable) + re.findall(r',?([^,]+)$', variable)
-        
+
         variables = []
         for variable in _variables:
             m = re.findall(r'([^:]+):', variable) + re.findall(r':?([^:]+)$', variable)
@@ -94,10 +101,12 @@ elif not all_vars:
             for key in data:
                 if key.endswith('data'):
                     if len(variable) == 1:
-                        print( "\nAlgorithm: " + algo + ":\n\t", data[key][variable[0]] )
+                        print( "\nAlgorithm: " + algo )
+                        pprint(  data[key][variable[0]] )
 
                     if len(variable) == 2:
-                        print( "\nAlgorithm: " + algo + ":\n\t", data[key][variable[0]][variable[1]] )
+                        print( "\nAlgorithm: " + algo )
+                        pprint( data[key][variable[0]][variable[1]] )
 
 
 

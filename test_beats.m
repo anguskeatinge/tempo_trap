@@ -5,30 +5,43 @@
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-pretty_algo_name = 'r2b3_e'
-algo_name = strcat('_', pretty_algo_name);
+if one_button_algo_name
 
-% The beats the algorithm measured
-test_dir = strcat( '../music/open/', algo_name, '/' );
-test_files = dir( strcat( test_dir, '*.txt') );
+    pretty_algo_name = one_button_algo_name;
+    algo_name = strcat('_', pretty_algo_name);
+    test_dir = strcat( '../music/open/', algo_name, '/' );
+
+    test_files = dir( strcat( test_dir, '*.txt') );
+
+    clear one_button_algo_name;
+
+else
 
 
+    pretty_algo_name = 'r2b2_master_b';
+    algo_name = strcat('_', pretty_algo_name);
+    % The beats the algorithm measured
+    test_dir = strcat( '../music/open/', algo_name, '/' );
+    test_files = dir( strcat( test_dir, '*.txt') );
 
+end
+
+return
 % Reading floats
 formatSpec = '%f';
 
 % set up the filename, there are going to be a bunch of different things to test.
 num = 0;
 while true
-    if not(exist(strcat('prelim_results/', pretty_algo_name, '.json'), 'file') == 2)
-        outfile = strcat('prelim_results/', pretty_algo_name, '.json');
+    if not(exist(strcat('ibt_results/', pretty_algo_name, '.json'), 'file') == 2)
+        outfile = strcat('ibt_results/', pretty_algo_name, '.json');
         break
 
-    elseif exist(strcat('prelim_results/', pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
+    elseif exist(strcat('ibt_results/', pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
         num = num + 1;
 
     else
-        outfile = strcat('prelim_results/', pretty_algo_name, '_', int2str(num), '.json');
+        outfile = strcat('ibt_results/', pretty_algo_name, '_', int2str(num), '.json');
         break
     end
 end
@@ -37,10 +50,18 @@ end
 % add the opening brace and first object
 S_last = strcat('{"', pretty_algo_name, '":{');
 
-median_offsets = [];
+median_correct_offsets = [];
+median_close_offsets = [];
 i = 1;
-offsets_plot = [];
-offsets_grp = [];
+correct_offsets_plot = [];
+correct_offsets_grp = [];
+
+close_offsets_plot = [];
+close_offsets_grp = [];
+
+correct_offset_lengths = [];
+close_offset_lengths = [];
+
 
 for file = [ ref_files'; test_files' ]
     % I should make sure that I'm comparing the right files here.
@@ -55,16 +76,24 @@ for file = [ ref_files'; test_files' ]
     detections = fscanf(fileID,formatSpec);
     fclose(fileID);
 
+    % detections
+    % detections = detections(1:2:end)
+    % detections = detections(2:2:end)
+
     % Need to retrieve a whole bunch more info from here, how?
-    [ beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, offsets ] = ...
+    [ beat_cmlCVec, beat_cmlTVec, phase_cmlCVec, phase_cmlTVec, tempo_cmlCVec, tempo_cmlTVec, correct_offsets, close_offsets, all_offsets] = ...
     beatEvaluator(detections',annotations');
 
-    median_offsets = [median_offsets median(offsets)];
+    median_correct_offsets = [median_correct_offsets median(correct_offsets)];
+    median_close_offsets = [median_close_offsets median(close_offsets)];
+    
     % offsets
-    % offsets_plot_matrix
-    offsets_plot = [ offsets_plot, offsets ];
-
-    offsets_grp = [ offsets_grp, (i)*ones( 1, length(offsets) ) ];
+    % correct_offsets_plot_matrix
+    correct_offsets_plot = [ correct_offsets_plot, correct_offsets ];
+    correct_offsets_grp = [ correct_offsets_grp, (i)*ones( 1, length(correct_offsets) ) ];
+    
+    close_offsets_plot = [ close_offsets_plot, close_offsets ];
+    close_offsets_grp = [ close_offsets_grp, (i)*ones( 1, length(close_offsets) ) ];
 
     i = i + 1;
     
@@ -114,7 +143,8 @@ for file = [ ref_files'; test_files' ]
         'tempo_Th_Bodd_cont', tempo_cmlCVec(4), 'tempo_Th_Bodd_tot', tempo_cmlTVec(4),...
         'tempo_Th_Beven_cont', tempo_cmlCVec(5), 'tempo_Th_Beven_tot', tempo_cmlTVec(5),...
         ...
-        'offsets', offsets...
+        'correct_offsets', correct_offsets,...
+        'close_offsets', close_offsets...
     );
     
     [tempo_score, tempo_choice] = max( [tempo_cmlTVec(1), tempo_cmlTVec(2), tempo_cmlTVec(3), tempo_cmlTVec(4), tempo_cmlTVec(5)] );
@@ -132,11 +162,17 @@ for file = [ ref_files'; test_files' ]
     % sum tempo tot's, see if they hit 1 -> good news
     sum_of_tempo_scores = sum( [tempo_cmlTVec(3), max(tempo_cmlTVec(1),tempo_cmlTVec(2)), max(tempo_cmlTVec(4),tempo_cmlTVec(5))] );
 
+    correct_offset_lengths = [ correct_offset_lengths length(correct_offsets)];
+    close_offset_lengths = [ close_offset_lengths length(close_offsets)];
 
     X2 = struct( 'beat_choice', [beat_choice, beat_score], 'phase_choice', [phase_choice, phase_score],...
         'tempo_choice', [tempo_choice, tempo_score],...
         'sum_of_tempo_scores', sum_of_tempo_scores,...
-        'offsets_median', median(offsets)...
+        'correct_offsets_median', median(correct_offsets),...
+        'correct_offsets_count', length(correct_offsets),...
+        'close_offsets_median', median(close_offsets),...
+        'close_offsets_count', length(close_offsets),...
+        'close_correct_diff', length(close_offsets) - length(correct_offsets)...
     );
 
     X = struct('raw', X1, 'analytics', X2);
@@ -148,12 +184,26 @@ for file = [ ref_files'; test_files' ]
 
 end
 
-% figure(figHandle1);
-% boxplot(offsets_plot, offsets_grp);
-% title('beat offsets');
-% ylabel('positive -> lagging detection (seconds)');
-% xlabel('song number');
-% grid on;
+figure(figHandle1);
+boxplot(correct_offsets_plot, correct_offsets_grp);
+title('beat offsets for correct annotations');
+ylabel('positive -> lagging detection (seconds)');
+xlabel('song number');
+grid on;
+
+figure(figHandle2);
+boxplot(close_offsets_plot, close_offsets_grp);
+title('beat offsets for close annotations');
+ylabel('positive -> lagging detection (seconds)');
+xlabel('song number');
+grid on;
+
+% plotting the difference between the things that got in and the things that nearly got in.
+% figure
+% hold on
+% stem(close_offset_lengths)
+% stem(correct_offset_lengths)
+% hold off
 
 %  finish up and prepare for next stage.
 out = S_last;
@@ -224,8 +274,8 @@ plot_matrix(:,i) = scores_for_sum_of_tempo_scores;
 % really_poor_performers
 % main_scores
 % mean(main_scores)
-% mean(median_offsets)
-% median_offsets
+% mean(median_correct_offsets)
+% median_correct_offsets
 % really_poor_performers__new = [];
 % for val = really_poor_performers
 %     really_poor_performers__new = {really_poor_performers, }
@@ -319,8 +369,10 @@ S = strcat( '"', 'beat_choices', '":', S, ',');
 out = strcat(out, S );
 
 
-X = struct('mean_of_medians', mean(median_offsets),...
-    'median_array', median_offsets...
+X = struct('correct_mean_of_medians', mean(median_correct_offsets),...
+    'correct_median_array', median_correct_offsets,...
+    'close_mean_of_medians', mean(median_close_offsets),...
+    'close_median_array', median_close_offsets...
 );
 S = json.dump(X); % S is simply a string, so I can play around with it...
 S = strcat( '"', 'offsets', '":', S, ',');

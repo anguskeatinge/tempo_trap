@@ -1,0 +1,17 @@
+fast vs. slow tempo 
+the slower the tempo, the greater the margin of error is (17.5%).
+This may make you inclined to favour slower tempos (ie. half time instead of normal time)
+
+pros:
+	larger window, more room for error. So beats that were nearly on track but not quite would get in here.
+
+cons:
+	if a beat is missed, this has a bigger percentage impact on the result than before.
+	if the annotation is on the off beat and then tempo is halved this would result in zero.
+		this is what dramatically impacts our results.
+
+
+
+SINGLE BUTTON TESTING 
+	Need jerry to put ibt back into github
+	
