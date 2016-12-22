@@ -10,6 +10,12 @@
 % run plots to get some visual feedback
 % 
 
+clear one_button_algo_name
+
+plot_on = false;
+compare_on = true;
+json_results_dir = 'prelim_results/';
+
 % set up the filename, there are going to be a bunch of different things to test.
 num = 1;
 while true
@@ -27,18 +33,45 @@ while true
         break
     end
 end
-outdir
+outdir;
 mkdir(outdir);
 
 % run script that fills this directory
-% system('')
+% system('../sausage-meat/ibt/ibt')
 
 one_button_algo_name = 'ibt';
 
-test_beats
+one_number = test_beats(one_button_algo_name, json_results_dir, plot_on)
+strcat(['./extract.py ', one_button_algo_name, ' official:mean ', json_results_dir])
 
-system('./extract.py all sum_of_tempos:mean');
+% here I am writing out all the different ibt results
+if compare_on
+	num = 1;
 
-plots
+	while true
+	    if not(exist(strcat([json_results_dir, 'ibt.json']), 'file') == 2)
+	        fname = strcat('../music/open/_ibt');
+	        one_button_algo_name = 'ibt';
+	        % strcat here
+	        system( strcat(['./extract.py ', one_button_algo_name, ' official:mean ', json_results_dir]) );
+	        continue
+
+	    elseif exist(strcat([json_results_dir, 'ibt_', int2str(num), '.json']), 'file') == 2
+	        one_button_algo_name = strcat('ibt_', int2str(num));
+	        system( strcat(['./extract.py ', one_button_algo_name, ' official:mean ', json_results_dir]) );
+	        num = num + 1;
+	        continue
+
+	    else
+	        break
+
+	    end
+	end
+end
+
+if plot_on
+	plots
+end
+
 
 

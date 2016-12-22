@@ -1,47 +1,36 @@
 % tests the beats of a dataset
+function [score] = test_beats(pretty_algo_name, results_dir, plot_on)
 
 
 % The reference beats
 ref_dir = '../music/open/_ground_truth/';
 ref_files = dir( strcat(ref_dir,'*.txt') );
 
-if one_button_algo_name
-
-    pretty_algo_name = one_button_algo_name;
-    algo_name = strcat('_', pretty_algo_name);
-    test_dir = strcat( '../music/open/', algo_name, '/' );
-
-    test_files = dir( strcat( test_dir, '*.txt') );
-
-    clear one_button_algo_name;
-
-else
-
-
-    pretty_algo_name = 'r2b2_master_b';
-    algo_name = strcat('_', pretty_algo_name);
-    % The beats the algorithm measured
-    test_dir = strcat( '../music/open/', algo_name, '/' );
-    test_files = dir( strcat( test_dir, '*.txt') );
-
+if nargin < 3
+    'incorrect num of args'
+    return
 end
 
-return
+algo_name = strcat('_', pretty_algo_name);
+% The beats the algorithm measured
+test_dir = strcat( '../music/open/', algo_name, '/' );
+test_files = dir( strcat( test_dir, '*.txt') );
+
 % Reading floats
 formatSpec = '%f';
 
 % set up the filename, there are going to be a bunch of different things to test.
 num = 0;
 while true
-    if not(exist(strcat('ibt_results/', pretty_algo_name, '.json'), 'file') == 2)
-        outfile = strcat('ibt_results/', pretty_algo_name, '.json');
+    if not(exist(strcat(results_dir, pretty_algo_name, '.json'), 'file') == 2)
+        outfile = strcat(results_dir, pretty_algo_name, '.json');
         break
 
-    elseif exist(strcat('ibt_results/', pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
+    elseif exist(strcat(results_dir, pretty_algo_name, '_', int2str(num), '.json'), 'file') == 2
         num = num + 1;
 
     else
-        outfile = strcat('ibt_results/', pretty_algo_name, '_', int2str(num), '.json');
+        outfile = strcat(results_dir, pretty_algo_name, '_', int2str(num), '.json');
         break
     end
 end
@@ -184,26 +173,30 @@ for file = [ ref_files'; test_files' ]
 
 end
 
-figure(figHandle1);
-boxplot(correct_offsets_plot, correct_offsets_grp);
-title('beat offsets for correct annotations');
-ylabel('positive -> lagging detection (seconds)');
-xlabel('song number');
-grid on;
+if plot_on
 
-figure(figHandle2);
-boxplot(close_offsets_plot, close_offsets_grp);
-title('beat offsets for close annotations');
-ylabel('positive -> lagging detection (seconds)');
-xlabel('song number');
-grid on;
+    figure(1);
+    boxplot(correct_offsets_plot, correct_offsets_grp);
+    title('beat offsets for correct annotations');
+    ylabel('positive -> lagging detection (seconds)');
+    xlabel('song number');
+    grid on;
 
-% plotting the difference between the things that got in and the things that nearly got in.
-% figure
-% hold on
-% stem(close_offset_lengths)
-% stem(correct_offset_lengths)
-% hold off
+    figure(2);
+    boxplot(close_offsets_plot, close_offsets_grp);
+    title('beat offsets for close annotations');
+    ylabel('positive -> lagging detection (seconds)');
+    xlabel('song number');
+    grid on;
+
+    % plotting the difference between the things that got in and the things that nearly got in.
+    figure(3);
+    hold on
+    stem(close_offset_lengths)
+    stem(correct_offset_lengths)
+    hold off
+
+end
 
 %  finish up and prepare for next stage.
 out = S_last;
@@ -257,19 +250,23 @@ end
 
 clear plot_matrix;
 
+
 % plot the data
-% figure(figHandle2);
-i = 1;
-plot_matrix(:,i) = main_scores;
-i = i + 1;
-plot_matrix(:,i) = beat_scores;
-i = i + 1;
-plot_matrix(:,i) = phase_scores;
-i = i + 1;
-plot_matrix(:,i) = tempo_scores;
-i = i + 1;
-plot_matrix(:,i) = scores_for_sum_of_tempo_scores;
-% boxplot(plot_matrix);
+if plot_on
+
+    figure(4);
+    i = 1;
+    plot_matrix(:,i) = main_scores;
+    i = i + 1;
+    plot_matrix(:,i) = beat_scores;
+    i = i + 1;
+    plot_matrix(:,i) = phase_scores;
+    i = i + 1;
+    plot_matrix(:,i) = tempo_scores;
+    i = i + 1;
+    plot_matrix(:,i) = scores_for_sum_of_tempo_scores;
+    boxplot(plot_matrix);
+end
 
 % really_poor_performers
 % main_scores
@@ -388,3 +385,4 @@ out = strcat(out, '}');
 
 json.write(out, outfile);
 
+score = mean(main_scores);

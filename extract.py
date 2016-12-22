@@ -14,17 +14,15 @@ try:
     try:
         directory = sys.argv[3]
     except Exception as e:
-        directory = 0;
-
-    pprint("I need to fix up extract.py to work with a directory input")
+        directory = 'results/';
 
     # retieve algos from here.
     
     if algo.lower() == "all":
-        algos = glob('results/*.json')
+        algos = glob(directory + '*.json')
     else:
         m = re.findall(r'([^,]+),', algo) + re.findall(r',?([^,]+)$', algo)
-        algos = ['results/{0}.json'.format(m_elt) for m_elt in m]
+        algos = [directory + '{0}.json'.format(m_elt) for m_elt in m]
 
 
     if variable.lower() == "all":
@@ -75,15 +73,15 @@ elif not all_vars:
     for variable in variables:
         print("")
         if len(variable) == 1:
-            print("\n\n")
+            # print("\n\n")
             print("XXXXXXX ", variable[0] + ':')
 
         elif len(variable) == 2:
-            print("\n\n")
+            # print("\n\n")
             print("XXXXXXX ", variable[0] + '{' + variable[1] + '} :')
 
         elif len(variable) == 3:
-            print("\n\n")
+            # print("\n\n")
             print("XXXXXXX ", variable[0] + '{' + variable[1] + '}{' + variable[2] + '} :')
 
         else:
