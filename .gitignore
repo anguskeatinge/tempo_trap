@@ -11,6 +11,7 @@
 
 # directory with play results in it
 prelim_results/
+ibt_results/
 
 # ...
 temp.txt
